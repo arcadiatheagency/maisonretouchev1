@@ -669,7 +669,8 @@ em{font-style:italic}
 @media (max-width:640px){.svc-grid .dots{display:flex}}
 @media (max-width:759px){.revs__dots{display:flex}
   .revs{scroll-snap-type:x mandatory;-webkit-mask-image:none;mask-image:none}
-  .revs .rev{scroll-snap-align:start}}
+  .revs .rev{scroll-snap-align:start}
+  .revs .rev[aria-hidden="true"]{display:none}}
 /* phones: each category becomes a swipeable row */
 @media (max-width:640px){
   .svc-grid__row{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:80%;
@@ -1468,9 +1469,9 @@ em{font-style:italic}
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, SPEED=22; /* px per second */
   var phone=matchMedia('(max-width:759px)'); /* phones swipe card by card, no drift */
   var pos=0, last=0, hold=0, held=false, hover=false, seen=true, setW=0;
-  function measure(){ setW=t.children[n].offsetLeft-t.children[0].offsetLeft; }
+  function measure(){ setW=phone.matches?0:t.children[n].offsetLeft-t.children[0].offsetLeft; }
   function step(){ return t.children[1].offsetLeft-t.children[0].offsetLeft; }
-  function wrap(x){ return setW ? ((x%setW)+setW)%setW : x; }
+  function wrap(x){ return setW>0 ? ((x%setW)+setW)%setW : x; }
   function pause(ms){ hold=Math.max(hold,performance.now()+ms); held=true; }
   function tick(now){
     var dt=Math.min(64,now-(last||now)); last=now;
@@ -1498,7 +1499,7 @@ em{font-style:italic}
   if('IntersectionObserver' in window) new IntersectionObserver(function(e){ seen=e[0].isIntersecting }).observe(t);
   addEventListener('resize',function(){ measure(); pause(300); });
   var dots=rail.querySelectorAll('.revs__dots span');
-  function dot(){ var i=Math.round(wrap(t.scrollLeft)/step())%n; for(var k=0;k<dots.length;k++) dots[k].classList.toggle('on',k===i); }
+  function dot(){ var i=t.scrollLeft+t.clientWidth>=t.scrollWidth-4&&!setW?n-1:Math.round(wrap(t.scrollLeft)/step())%n; for(var k=0;k<dots.length;k++) dots[k].classList.toggle('on',k===i); }
   t.addEventListener('scroll',function(){ requestAnimationFrame(dot) },{passive:true});
   measure(); dot(); requestAnimationFrame(tick);
 })();
