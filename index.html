@@ -553,6 +553,14 @@ em{font-style:italic}
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23C9AE68' stroke-width='1.1' stroke-linecap='round'%3E%3Crect x='1.8' y='2.8' width='12.4' height='11.4' rx='1'/%3E%3Cpath d='M1.8 6.4h12.4M5 1.4v2.8M11 1.4v2.8'/%3E%3C/svg%3E") center/16px no-repeat}
 .form__foot{display:flex;flex-wrap:wrap;align-items:center;gap:22px 30px;margin-top:6px}
 .form__note{font-size:var(--t-fine);color:rgba(217,213,198,.76);max-width:38ch;line-height:1.6}
+/* phones: every rectangle button centred at one width, within easy thumb reach */
+@media (max-width:640px){
+  .btn,.hero__cta .btn{min-width:240px;padding:18px 32px}
+  .revs__foot{justify-content:center}
+  .revs__nav{display:none}
+  .form__foot{flex-direction:column;text-align:center}
+  .form__note{margin-inline:auto}
+}
 .form__status{font-family:var(--sans);font-size:var(--t-label);letter-spacing:var(--track);text-transform:uppercase;
   color:var(--gold);min-height:1em}
 
