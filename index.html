@@ -699,6 +699,16 @@ em{font-style:italic}
   .svc-grid__row::-webkit-scrollbar{display:none}
   .svc-card{scroll-snap-align:start;min-height:250px}
 }
+/* phones: the three steps swipe like the services rows */
+@media (max-width:640px){
+  .steps{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:84%;gap:var(--colgap);
+    overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+    margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter);scroll-padding-inline:var(--gutter)}
+  .steps::-webkit-scrollbar{display:none}
+  .step{scroll-snap-align:start}
+  .steps .rv-d1,.steps .rv-d2{transition-delay:0s}
+  .steps + .dots{display:flex;margin-top:28px}
+}
 @media (prefers-reduced-motion:reduce){.svc-card,.svc-card *{transition:none!important}}
 
 /* ---------- Loro Piana-style framing ---------- */
@@ -1045,6 +1055,8 @@ em{font-style:italic}
         <h3 class="h3">Try it again</h3>
         <p>You come back and try it on. If a line still isn&rsquo;t quite right, it goes back on the table. It only goes home when it&rsquo;s&nbsp;right.</p>
       </article>
+    </div>
+    <div class="dots" aria-hidden="true"><span></span><span></span><span></span>
     </div>
   </div>
 </section>
@@ -1525,9 +1537,9 @@ em{font-style:italic}
 })();
 </script>
 <script>
-/* swipe dots follow the services rows on phones */
+/* swipe dots follow the services rows and process steps on phones */
 (function(){
-  document.querySelectorAll('.svc-grid__row').forEach(function(row){
+  document.querySelectorAll('.svc-grid__row,.steps').forEach(function(row){
     var dots=row.nextElementSibling; if(!dots||!dots.classList.contains('dots')) return;
     var d=dots.children, cards=row.children;
     function upd(){
