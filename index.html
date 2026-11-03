@@ -787,6 +787,9 @@ em{font-style:italic}
   .svc-grid.can-draw .svc-art :not(g){stroke-dashoffset:0!important;opacity:1;transition:none!important}
 }
 </style>
+<link rel="preconnect" href="https://maps.google.com">
+<link rel="preconnect" href="https://www.google.com">
+<link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
 </head>
 <body>
 
@@ -1473,15 +1476,26 @@ em{font-style:italic}
 </script>
 <script>
 /* Google Maps loads only when the page is top-level (the live site); framed previews
-   such as the artifact viewer block third-party embeds, so they keep the drawn plan */
+   such as the artifact viewer block third-party embeds, so they keep the drawn plan.
+   It starts as soon as the rest of the page has loaded, behind the drawn plan, which
+   fades away once Google's map is ready, so the box is never empty while it loads */
 (function(){
   var m=document.querySelector('.map[data-gmap]');
   if(!m||window.top!==window) return;
-  var art=m.querySelector('.map__art'), f=document.createElement('iframe');
-  f.className='map__frame'; f.loading='lazy'; f.referrerPolicy='no-referrer-when-downgrade';
-  f.title='Map showing Maison Retouche at Shop 4/79 Willsmere Road, Kew';
-  f.src=m.getAttribute('data-gmap');
-  art.replaceWith(f);
+  function start(){
+    var art=m.querySelector('.map__art'), pin=m.querySelector('.map__pin'), f=document.createElement('iframe');
+    f.className='map__frame'; f.referrerPolicy='no-referrer-when-downgrade';
+    f.title='Map showing Maison Retouche at Shop 4/79 Willsmere Road, Kew';
+    f.style.opacity=0;
+    art.style.cssText='position:absolute;top:0;left:0;z-index:1;transition:opacity .8s ease;height:calc(100% - '+(pin?pin.offsetHeight:0)+'px)';
+    f.onload=function(){ setTimeout(function(){
+      f.style.transition='opacity .8s ease'; f.style.opacity=1; art.style.opacity=0;
+      setTimeout(function(){ art.remove(); },900);
+    },400); };
+    f.src=m.getAttribute('data-gmap');
+    m.insertBefore(f,art);
+  }
+  if(document.readyState==='complete') setTimeout(start,300); else addEventListener('load',function(){ setTimeout(start,300); });
 })();
 </script>
 <script>
