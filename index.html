@@ -708,8 +708,7 @@ em{font-style:italic}
     overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
     margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter);scroll-padding-inline:var(--gutter)}
   .steps::-webkit-scrollbar{display:none}
-  .steps{overscroll-behavior-x:contain}
-  .step{scroll-snap-align:start;scroll-snap-stop:always}
+  .step{scroll-snap-align:start}
   .steps .rv-d1,.steps .rv-d2{transition-delay:0s}
   .steps + .dots{display:flex;margin-top:28px}
 }
@@ -1486,18 +1485,20 @@ em{font-style:italic}
 })();
 </script>
 <script>
-/* service sketches draw themselves on as each row comes into view */
+/* service sketches draw themselves on as each card comes into view: a row at a time, staggered, on wider
+   screens; on phones, where rows swipe, each card draws as it's swiped in rather than while off-screen */
 (function(){
   var grid=document.querySelector('.svc-grid');
   if(!grid||!('IntersectionObserver' in window)) return;
   grid.querySelectorAll('.svc-art path:not(.d),.svc-art circle:not(.d),.svc-art ellipse:not(.d)').forEach(function(el){el.setAttribute('pathLength','1')});
   grid.classList.add('can-draw');
-  var io=new IntersectionObserver(function(es){es.forEach(function(e){
-    if(!e.isIntersecting) return;
-    e.target.querySelectorAll('.svc-art').forEach(function(a,i){setTimeout(function(){a.classList.add('is-drawn')},i*180)});
-    io.unobserve(e.target);
-  })},{threshold:.25});
-  grid.querySelectorAll('.svc-grid__row').forEach(function(r){io.observe(r)});
+  var io=new IntersectionObserver(function(es){
+    es.filter(function(e){return e.isIntersecting}).forEach(function(e,i){
+      var a=e.target.querySelector('.svc-art'); io.unobserve(e.target);
+      if(a) setTimeout(function(){a.classList.add('is-drawn')},i*180);
+    });
+  },{threshold:.5});
+  grid.querySelectorAll('.svc-card').forEach(function(c){io.observe(c)});
 })();
 </script>
 <script>
